@@ -47,5 +47,5 @@ sudo apt-get install -y git docker-ce docker-ce-cli containerd.io docker-buildx-
 
 # Grant docker to user dodi
 sudo usermod -aG docker dodi
-
+sudo su dodi
 git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment

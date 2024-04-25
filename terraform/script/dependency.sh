@@ -1,32 +1,4 @@
 #! /bin/bash
-#Set OS Environment Variable
-echo  HELLO=WORLD >> /etc/profile
-# Password for the 'elastic' user (at least 6 characters)
-echo ELASTIC_PASSWORD=changeme >> /etc/profile
-
-# Password for the 'kibana_system' user (at least 6 characters)
-echo KIBANA_PASSWORD=changeme >> /etc/profile
-
-# Version of Elastic products
-echo STACK_VERSION=8.13.2 >> /etc/profile
-
-# Set the cluster name
-echo CLUSTER_NAME=dkatalis-es-cluster >> /etc/profile
-
-# Set to 'basic' or 'trial' to automatically start the 30-day trial
-echo LICENSE=basic >> /etc/profile
-#LICENSE=trial
-
-# Port to expose Elasticsearch HTTP API to the host
-echo ES_PORT=9200 >> /etc/profile
-#ES_PORT=127.0.0.1:9200
-
-# Port to expose Kibana to the host
-echo KIBANA_PORT=5601 >> /etc/profile
-#KIBANA_PORT=80
-
-# Increase or decrease based on the available host memory (in bytes)
-echo MEM_LIMIT=1500M >> /etc/profile
 
 # Add Docker's official GPG key:
 sudo apt-get update
@@ -48,8 +20,13 @@ sudo apt-get install -y git docker-ce docker-ce-cli containerd.io docker-buildx-
 # Grant docker to user dodi
 sudo usermod -aG docker dodi
 
-git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment
+# ES CONFIG
+sudo sysctl -w vm.max_map_count=262144
 
-sudo chown -R dodi:dodi /usr/share/app-deployment
+sudo -u dodi git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment
 
 docker swarm init
+
+cd /usr/share/app-deployment/manifest
+
+docker stack deploy -c docker-compose.yml dkatalis-app

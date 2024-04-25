@@ -1,9 +1,18 @@
 services:
+  generate-common-certs:
+    image: alpine:latest
+    volumes:
+      - common_certs:/certs
+    command: sh -c "apk --no-cache add openssl && \
+                    openssl req -new -newkey rsa:2048 -days 365 \
+                    -nodes -x509 -subj '/CN=localhost' \
+                    -keyout /certs/server.key -out /certs/server.crt && \
+                    chmod 644 /certs/server.key /certs/server.crt"
   # ES+Kibana Section
-  setup:
+  es_setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - es_certs:/usr/share/elasticsearch/config/certs
     user: "0"
     command: >
       bash -c '
@@ -67,7 +76,7 @@ services:
     #     condition: service_healthy
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - es_certs:/usr/share/elasticsearch/config/certs
       - esdata01:/usr/share/elasticsearch/data
     # ports:
     #   - ${ES_PORT}:9200
@@ -112,7 +121,7 @@ services:
       - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - es_certs:/usr/share/elasticsearch/config/certs
       - esdata02:/usr/share/elasticsearch/data
     environment:
       - node.name=es02
@@ -154,7 +163,7 @@ services:
       - es02
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/elasticsearch/config/certs
+      - es_certs:/usr/share/elasticsearch/config/certs
       - esdata03:/usr/share/elasticsearch/data
     environment:
       - node.name=es03
@@ -213,7 +222,8 @@ services:
     #     condition: service_healthy
     image: docker.elastic.co/kibana/kibana:${STACK_VERSION}
     volumes:
-      - certs:/usr/share/kibana/config/certs
+      - es_certs:/usr/share/kibana/config/certs
+      - common_certs:/usr/share/kibana/config/common_certs
       - kibana_data:/usr/share/kibana/data
     ports:
       - ${KIBANA_PORT}:5601
@@ -225,8 +235,8 @@ services:
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTICSEARCH_SSL_VERIFICATIONMODE=certificate
       - SERVER_SSL_ENABLED=true
-      - SERVER_SSL_KEY=config/certs/kibana.key
-      - SERVER_SSL_CERTIFICATE=config/certs/kibana.crt
+      - SERVER_SSL_KEY=/usr/share/kibana/config/common_certs/server.key
+      - SERVER_SSL_CERTIFICATE=/usr/share/kibana/config/common_certs/server.crt
     deploy:
       resources:
         limits:
@@ -244,15 +254,6 @@ services:
   # ES+Kibana End Section
 
   # Monitoring Section
-  generate-certs:
-    image: alpine:latest
-    volumes:
-      - grafana_certs:/certs
-    command: sh -c "apk --no-cache add openssl && \
-                    openssl req -new -newkey rsa:2048 -days 365 \
-                    -nodes -x509 -subj '/CN=localhost' \
-                    -keyout /certs/server.key -out /certs/server.crt && \
-                    chmod 644 /certs/server.key /certs/server.crt"
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     ports:
@@ -284,7 +285,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      - grafana_certs:/etc/grafana/certs
+      - common_certs:/etc/grafana/certs
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=changeme
       - GF_SERVER_PROTOCOL=https
@@ -292,11 +293,11 @@ services:
       - GF_SERVER_CERT_KEY=/etc/grafana/certs/server.key
     
 volumes:
-  certs:
+  es_certs:
   esdata01:
   esdata02:
   esdata03:
   kibana_data:
   prometheus_data:
-  grafana_certs:
+  common_certs:
   grafana_data:

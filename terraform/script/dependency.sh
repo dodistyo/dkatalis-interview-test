@@ -23,7 +23,9 @@ sudo usermod -aG docker dodi
 # ES CONFIG
 sudo sysctl -w vm.max_map_count=262144
 
-sudo -u dodi git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment
+git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment
+
+sudo chown -R dodi:dodi /usr/share/app-deployment
 
 docker swarm init
 

@@ -208,7 +208,7 @@ services:
       - |
         apk update
         apk add socat
-        socat TCP-LISTEN:9200,fork TCP:es1:9200
+        socat TCP-LISTEN:9200,fork TCP:es01:9200
     ports:
       - 9200:9200
 

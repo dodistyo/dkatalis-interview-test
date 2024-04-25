@@ -69,8 +69,8 @@ services:
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - esdata01:/usr/share/elasticsearch/data
-    ports:
-      - ${ES_PORT}:9200
+    # ports:
+    #   - ${ES_PORT}:9200
     environment:
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
@@ -191,6 +191,18 @@ services:
       timeout: 10s
       retries: 120
 
+  proxy:
+    image: alpine:latest
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk update
+        apk add socat
+        socat TCP-LISTEN:9200,fork TCP:es1:9200
+    ports:
+      - 9200:9200
+
   kibana:
     # depends_on:
     #   es01:
@@ -211,6 +223,10 @@ services:
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+      - ELASTICSEARCH_SSL_VERIFICATIONMODE=certificate
+      - SERVER_SSL_ENABLED=true
+      - SERVER_SSL_KEY=config/certs/kibana.key
+      - SERVER_SSL_CERTIFICATE=config/certs/kibana.crt
     deploy:
       resources:
         limits:

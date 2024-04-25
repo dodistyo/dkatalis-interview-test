@@ -29,4 +29,4 @@ docker swarm init
 
 cd /usr/share/app-deployment/manifest
 
-docker stack deploy -c docker-compose.yml dkatalis-app
+export $(cat .env) > /dev/null 2>&1; docker stack deploy -c docker-compose.yml dkatalis-app

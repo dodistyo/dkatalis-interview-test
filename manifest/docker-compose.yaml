@@ -227,7 +227,7 @@ services:
   generate-certs:
     image: alpine:latest
     volumes:
-      - ./certs:/certs
+      - grafana_certs:/certs
     command: sh -c "apk --no-cache add openssl && \
                     openssl req -new -newkey rsa:2048 -days 365 \
                     -nodes -x509 -subj '/CN=localhost' \
@@ -264,7 +264,7 @@ services:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./certs:/etc/grafana/certs
+      - grafana_certs:/etc/grafana/certs
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=changeme
       - GF_SERVER_PROTOCOL=https
@@ -278,4 +278,5 @@ volumes:
   esdata03:
   kibana_data:
   prometheus_data:
+  grafana_certs:
   grafana_data:

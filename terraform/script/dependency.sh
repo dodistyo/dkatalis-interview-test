@@ -16,16 +16,16 @@ sudo apt-get update
 
 # Install Dependency
 sudo apt-get install -y git docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin whois
-
-# Grant docker to user dodi
-sudo usermod -aG docker dodi
+# Add user app
+sudo adduser app
+# Grant docker to user app
+sudo usermod -aG docker app
 
 # ES CONFIG
 sudo sysctl -w vm.max_map_count=262144
-
 git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment
 
-sudo chown -R dodi:dodi /usr/share/app-deployment
+sudo chown -R app:app /usr/share/app-deployment
 
 docker swarm init
 

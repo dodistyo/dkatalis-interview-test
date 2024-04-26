@@ -23,12 +23,3 @@ sudo usermod -aG docker app
 
 # ES CONFIG
 sudo sysctl -w vm.max_map_count=262144
-git clone https://github.com/dodistyo/dkatalis-interview-test.git /usr/share/app-deployment
-
-sudo chown -R app:app /usr/share/app-deployment
-
-docker swarm init
-
-cd /usr/share/app-deployment/manifest
-
-export $(cat .env) > /dev/null 2>&1; docker stack deploy -c docker-compose.yml dkatalis-app

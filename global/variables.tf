@@ -7,8 +7,3 @@ variable "region" {
   description = "The region to deploy to"
   default = "asia-southeast1"
 }
-
-variable "network" {
-  description = "The network name to deploy to"
-  default     = "default"
-}

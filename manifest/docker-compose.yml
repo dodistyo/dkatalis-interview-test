@@ -240,9 +240,9 @@ services:
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTICSEARCH_SSL_VERIFICATIONMODE=certificate
-      - SERVER_SSL_ENABLED=true
-      - SERVER_SSL_KEY=/usr/share/kibana/config/certs/kibana/kibana.key
-      - SERVER_SSL_CERTIFICATE=/usr/share/kibana/config/certs/kibana/kibana.crt
+      # - SERVER_SSL_ENABLED=true
+      # - SERVER_SSL_KEY=/usr/share/kibana/config/certs/kibana/kibana.key
+      # - SERVER_SSL_CERTIFICATE=/usr/share/kibana/config/certs/kibana/kibana.crt
     deploy:
       resources:
         limits:

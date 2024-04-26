@@ -7,7 +7,9 @@ services:
                     openssl req -new -newkey rsa:2048 -days 365 \
                     -nodes -x509 -subj '/CN=localhost' \
                     -keyout /certs/server.key -out /certs/server.crt && \
-                    chmod 644 /certs/server.key /certs/server.crt"
+                    cp /certs/server.key /certs/server.key.pem && \
+                    cp /certs/server.crt /certs/server.crt.pem && \
+                    chmod 644 /certs/server.key /certs/server.crt /certs/server.key.pem /certs/server.crt.pem"
   # ES+Kibana Section
   es_setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
@@ -234,9 +236,9 @@ services:
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
       - ELASTICSEARCH_SSL_VERIFICATIONMODE=certificate
-      # - SERVER_SSL_ENABLED=true
-      # - SERVER_SSL_KEY=/usr/share/kibana/config/common_certs/server.key
-      # - SERVER_SSL_CERTIFICATE=/usr/share/kibana/config/common_certs/server.crt
+      - SERVER_SSL_ENABLED=true
+      - SERVER_SSL_KEY=/usr/share/kibana/config/common_certs/server.key.pem
+      - SERVER_SSL_CERTIFICATE=/usr/share/kibana/config/common_certs/server.crt.pem
     deploy:
       resources:
         limits:

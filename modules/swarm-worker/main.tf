@@ -48,8 +48,8 @@ resource "null_resource" "upload_private_key" {
 
   provisioner "remote-exec" {
     inline = [
-      "while ! sudo scp -o StrictHostKeyChecking=no -o NoHostAuthenticationForLocalhost=yes -o UserKnownHostsFile=/dev/null -i /home/ubuntu/id_rsa ubuntu@${var.docker_swarm_manager_ip}:/home/ubuntu/swarm-join-token /home/ubuntu/swarm-join-token; do sleep 5; done",
-      "while ! sudo docker swarm join --token $(cat /home/ubuntu/swarm-join-token) ${var.docker_swarm_manager_ip}:2377; do sleep 5; done"
+      "while ! sudo scp -o StrictHostKeyChecking=no -o NoHostAuthenticationForLocalhost=yes -o UserKnownHostsFile=/dev/null -i /home/ubuntu/id_rsa ubuntu@${var.docker_swarm_manager_ip}:/home/ubuntu/swarm-join-token /home/ubuntu/swarm-join-token; do sleep 10; done",
+      "while ! sudo docker swarm join --token $(cat /home/ubuntu/swarm-join-token) ${var.docker_swarm_manager_ip}:2377; do sleep 10; done"
     ]
   }
 }

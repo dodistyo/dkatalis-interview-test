@@ -11,6 +11,11 @@ variable "zone" {
   default = "asia-southeast1-a"
 }
 
+variable "subnet_id" {
+  description = "Subnet ID that the manager used"
+  type = string
+}
+
 variable "instance_name" {
   description = "VM Insance name"
   type = string

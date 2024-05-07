@@ -350,6 +350,7 @@ volumes:
   esdata01:
   esdata02:
   esdata03:
+  esdata04:
   kibana_data:
   prometheus_data:
   common_certs:
